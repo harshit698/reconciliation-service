@@ -1,4 +1,4 @@
-package textsimilarity;
+package similaritymetric.textsimilarity;
 
 public interface TextSimilarityMetric {
 

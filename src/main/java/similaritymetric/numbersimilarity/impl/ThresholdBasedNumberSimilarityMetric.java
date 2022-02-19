@@ -1,6 +1,6 @@
-package numbersimilarity.impl;
+package similaritymetric.numbersimilarity.impl;
 
-import numbersimilarity.NumberSimilarityMetric;
+import similaritymetric.numbersimilarity.NumberSimilarityMetric;
 
 public class ThresholdBasedNumberSimilarityMetric implements NumberSimilarityMetric {
 

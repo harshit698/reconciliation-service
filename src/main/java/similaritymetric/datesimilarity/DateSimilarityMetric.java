@@ -1,4 +1,4 @@
-package datesimilarity;
+package similaritymetric.datesimilarity;
 
 import java.time.LocalDateTime;
 

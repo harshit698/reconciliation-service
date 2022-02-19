@@ -1,6 +1,6 @@
-package datesimilarity.impl;
+package similaritymetric.datesimilarity.impl;
 
-import datesimilarity.DateSimilarityMetric;
+import similaritymetric.datesimilarity.DateSimilarityMetric;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 

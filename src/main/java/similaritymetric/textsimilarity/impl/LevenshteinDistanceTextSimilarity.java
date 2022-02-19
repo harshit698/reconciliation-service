@@ -1,7 +1,7 @@
-package textsimilarity.impl;
+package similaritymetric.textsimilarity.impl;
 
 import org.apache.commons.text.similarity.LevenshteinDistance;
-import textsimilarity.TextSimilarityMetric;
+import similaritymetric.textsimilarity.TextSimilarityMetric;
 
 public class LevenshteinDistanceTextSimilarity implements TextSimilarityMetric {
 

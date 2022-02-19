@@ -1,4 +1,4 @@
-package numbersimilarity;
+package similaritymetric.numbersimilarity;
 
 public interface NumberSimilarityMetric{
 

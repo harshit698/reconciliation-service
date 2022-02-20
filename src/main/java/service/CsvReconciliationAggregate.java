@@ -1,5 +1,6 @@
 package service;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.csv.CSVRecord;
 
@@ -12,25 +13,41 @@ public class CsvReconciliationAggregate implements ReconciliationAggregate<CSVRe
 
 
     @Override
-    public void putExactMatch(CSVRecord exactMatch) {
+    public void putSingleExactMatch(CSVRecord exactMatch) {
         this.exactMatches.add(exactMatch);
     }
 
     @Override
-    public void fillPartialMatches(CSVRecord partialMatch) {
+    public void putExactMatches(List<CSVRecord> exactMatch) {
+        this.exactMatches = new ArrayList<>(exactMatch);
+    }
+
+    @Override
+    public void putSinglePartialMatch(CSVRecord partialMatch) {
         this.partialMatches.add(partialMatch);
     }
 
     @Override
-    public void fillOnlyInBuyer(CSVRecord onlyInBuyer) {
+    public void fillPartialMatches(List<CSVRecord> partialMatches) {
+        this.partialMatches = new ArrayList<>(partialMatches);
+    }
+
+    @Override
+    public void putSingleOnlyInBuyer(CSVRecord onlyInBuyer) {
         this.onlyInBuyerList.add(onlyInBuyer);
     }
 
     @Override
-    public void fillOnlyInSupplier(CSVRecord onlyInSupplier) {
-        this.onlyInSupplierList.add(onlyInSupplier);
+    public void fillOnlyInBuyerList(List<CSVRecord> onlyInBuyerList) {
+        this.onlyInBuyerList = new ArrayList<>(onlyInBuyerList);
     }
 
+    @Override
+    public void fillOnlyInSupplierList(List<CSVRecord> onlyInSupplierList) {
+        this.onlyInSupplierList = new ArrayList<>(onlyInSupplierList);
+    }
+
+    @Override
     public List<CSVRecord> getExactMatches() {
         return exactMatches;
     }

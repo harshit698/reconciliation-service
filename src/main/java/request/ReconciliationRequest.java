@@ -1,33 +1,33 @@
 package request;
 
 import service.ReconciliationEntityReferences;
-import similaritymetric.DateSimilarityMetricStrategy;
-import similaritymetric.NumberSimilarityMetricStrategy;
-import similaritymetric.TextSimilarityMetricStrategy;
 
 public class ReconciliationRequest {
     private final ReconciliationEntityReferences entityReferences;
+    private final DateSimilarityMetricRequest dateSimilarityMetricRequest;
+    private final NumberSimilarityMetricRequest numberSimilarityMetricRequest;
+    private final TextSimilarityMetricRequest textSimilarityMetricRequest;
 
     public ReconciliationRequest(ReconciliationEntityReferences entityReferences,
-                                 DateSimilarityMetricStrategy dateSimilarityMetricStrategy,
-                                 NumberSimilarityMetricStrategy numberSimilarityMetricStrategy,
-                                 TextSimilarityMetricStrategy textSimilarityMetricStrategy) {
+                                 DateSimilarityMetricRequest dateSimilarityMetricRequest,
+                                 NumberSimilarityMetricRequest numberSimilarityMetricRequest,
+                                 TextSimilarityMetricRequest textSimilarityMetricRequest) {
         this.entityReferences = entityReferences;
-        this.dateSimilarityMetricStrategy = dateSimilarityMetricStrategy;
-        this.numberSimilarityMetricStrategy = numberSimilarityMetricStrategy;
-        this.textSimilarityMetricStrategy = textSimilarityMetricStrategy;
+        this.dateSimilarityMetricRequest = dateSimilarityMetricRequest;
+        this.numberSimilarityMetricRequest = numberSimilarityMetricRequest;
+        this.textSimilarityMetricRequest = textSimilarityMetricRequest;
     }
 
-    public DateSimilarityMetricStrategy getDateSimilarityMetricStrategy() {
-        return dateSimilarityMetricStrategy;
+    public DateSimilarityMetricRequest getDateSimilarityMetricRequest() {
+        return dateSimilarityMetricRequest;
     }
 
-    public NumberSimilarityMetricStrategy getNumberSimilarityMetricStrategy() {
-        return numberSimilarityMetricStrategy;
+    public NumberSimilarityMetricRequest getNumberSimilarityMetricRequest() {
+        return numberSimilarityMetricRequest;
     }
 
-    public TextSimilarityMetricStrategy getTextSimilarityMetricStrategy() {
-        return textSimilarityMetricStrategy;
+    public TextSimilarityMetricRequest getTextSimilarityMetricRequest() {
+        return textSimilarityMetricRequest;
     }
 
     public ReconciliationEntityReferences getEntityReferences() {

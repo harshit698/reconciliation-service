@@ -13,8 +13,14 @@ public class ThresholdBasedNumberSimilarityMetric implements NumberSimilarityMet
     @Override
     public double compute(double firstNumber, double secondNumber) {
 
-        double firstNumberSecondNumberDiff = Math.abs(firstNumber - secondNumber);
+        if (firstNumber == secondNumber) {
+            return 1;
+        }
 
-        return firstNumberSecondNumberDiff <= threshold? firstNumberSecondNumberDiff: Double.MAX_VALUE;
+        double largerNumber = Math.max(firstNumber, secondNumber);
+        double smallNumber = Math.min(firstNumber, secondNumber);
+        double similarityIndex = smallNumber/largerNumber;
+
+        return similarityIndex <= threshold? similarityIndex: 0;
     }
 }

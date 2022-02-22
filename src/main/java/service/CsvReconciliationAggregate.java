@@ -18,8 +18,8 @@ public class CsvReconciliationAggregate implements ReconciliationAggregate<CSVRe
     }
 
     @Override
-    public void putExactMatches(List<CSVRecord> exactMatch) {
-        this.exactMatches = new ArrayList<>(exactMatch);
+    public void putExactMatches(List<CSVRecord> exactMatches) {
+        this.exactMatches = new ArrayList<>(exactMatches);
     }
 
     @Override

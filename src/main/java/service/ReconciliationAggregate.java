@@ -1,7 +1,6 @@
 package service;
 
 import java.util.List;
-import org.apache.commons.csv.CSVRecord;
 
 public interface ReconciliationAggregate<T> {
 

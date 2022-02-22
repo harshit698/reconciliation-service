@@ -16,17 +16,23 @@ public class FileReconciliationApplication {
 
     public static void main(String[] args) {
 
-        String firstFileName = args[0];
-        String secondFileName = args[1];
+        String firstFileName = "src/main/resources/Buyer.csv";
+        String secondFileName = "src/main/resources/Supplier.csv";
 
         NumberSimilarityMetricRequest numberSimilarityMetricRequest = new NumberSimilarityMetricRequest(
                 NumberSimilarityMetricStrategy.THRESHOLD_BASED, 2);
         DateSimilarityMetricRequest dateSimilarityMetricRequest = new DateSimilarityMetricRequest(
                 DateSimilarityMetricStrategy.THRESHOLD_BASED, 2);
+        TextSimilarityMetricRequest textSimilarityMetricRequest = new TextSimilarityMetricRequest(
+                TextSimilarityMetricStrategy.LEVENSHTEIN_DISTANCE);
+        ReconciliationEntityReferences reconciliationEntityReferences = new ReconciliationEntityReferences(
+                firstFileName, secondFileName);
         ReconciliationRequest request = new ReconciliationRequest(
-                new ReconciliationEntityReferences(firstFileName, secondFileName),
-                dateSimilarityMetricRequest, numberSimilarityMetricRequest,
-                new TextSimilarityMetricRequest(TextSimilarityMetricStrategy.LEVENSHTEIN_DISTANCE));
+                reconciliationEntityReferences,
+                dateSimilarityMetricRequest,
+                numberSimilarityMetricRequest,
+                textSimilarityMetricRequest
+        );
 
         ReconciliationService reconciliationService = ReconciliationServiceFactory.get(ReconciliationServiceStrategy.CSV_FILE);
 

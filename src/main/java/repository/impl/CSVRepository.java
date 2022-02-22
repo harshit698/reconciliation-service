@@ -9,9 +9,9 @@ import org.apache.commons.csv.CSVFormat.Builder;
 import org.apache.commons.csv.CSVRecord;
 import repository.Repository;
 
-public class CSVRepository implements Repository {
+public class CSVRepository implements Repository<CSVRecord> {
 
-    public static List<CSVRecord> readCsvRecords(String fileName) {
+    public List<CSVRecord> read(String fileName) {
 
         try {
             Reader fileReader = new FileReader(fileName);

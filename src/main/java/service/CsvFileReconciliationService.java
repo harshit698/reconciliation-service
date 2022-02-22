@@ -102,12 +102,12 @@ public class CsvFileReconciliationService extends ReconciliationService<CSVRecor
 
     @Override
     protected List<CSVRecord> getFirstReconciliationEntityList(ReconciliationRequest request) {
-        return repository.readCsvRecords(request.getEntityReferences().getFirstEntityReference());
+        return repository.read(request.getEntityReferences().getFirstEntityReference());
     }
 
     @Override
     protected List<CSVRecord> getSecondReconciliationEntityList(ReconciliationRequest request) {
-        return repository.readCsvRecords(request.getEntityReferences().getSecondEntityReference());
+        return repository.read(request.getEntityReferences().getSecondEntityReference());
     }
 
     @Override

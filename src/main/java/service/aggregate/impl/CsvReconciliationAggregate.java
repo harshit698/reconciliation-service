@@ -1,8 +1,9 @@
-package service;
+package service.aggregate.impl;
 
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.csv.CSVRecord;
+import service.aggregate.ReconciliationAggregate;
 
 public class CsvReconciliationAggregate implements ReconciliationAggregate<CSVRecord> {
 

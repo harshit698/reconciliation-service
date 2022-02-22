@@ -16,6 +16,8 @@ import java.util.stream.IntStream;
 import org.apache.commons.csv.CSVRecord;
 import repository.impl.CSVRepository;
 import request.ReconciliationRequest;
+import service.aggregate.impl.CsvReconciliationAggregate;
+import service.aggregate.ReconciliationAggregate;
 
 public class CsvFileReconciliationService extends ReconciliationService<CSVRecord> {
 

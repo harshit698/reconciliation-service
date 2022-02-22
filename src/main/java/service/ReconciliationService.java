@@ -6,6 +6,7 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
 import request.ReconciliationRequest;
+import service.aggregate.ReconciliationAggregate;
 import similaritymetric.SimilarityMetricFactory;
 import similaritymetric.datesimilarity.DateSimilarityMetric;
 import similaritymetric.numbersimilarity.NumberSimilarityMetric;

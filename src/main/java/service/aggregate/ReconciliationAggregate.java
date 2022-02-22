@@ -1,4 +1,4 @@
-package service;
+package service.aggregate;
 
 import java.util.List;
 

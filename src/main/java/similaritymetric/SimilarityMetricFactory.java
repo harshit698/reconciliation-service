@@ -6,7 +6,7 @@ import similaritymetric.datesimilarity.impl.ThresholdBasedDateTimeSimilarityMetr
 import similaritymetric.numbersimilarity.NumberSimilarityMetric;
 import similaritymetric.numbersimilarity.impl.ThresholdBasedNumberSimilarityMetric;
 import similaritymetric.textsimilarity.TextSimilarityMetric;
-import similaritymetric.textsimilarity.impl.LevenshteinDistanceTextSimilarity;
+import similaritymetric.textsimilarity.impl.LevenshteinDistanceBasedTextSimilarity;
 
 public class SimilarityMetricFactory {
 
@@ -21,7 +21,7 @@ public class SimilarityMetricFactory {
     public static TextSimilarityMetric getTextSimilarityMetric(ReconciliationRequest request) {
         switch (request.getTextSimilarityMetricRequest().getStrategy()) {
             default:
-                return new LevenshteinDistanceTextSimilarity();
+                return new LevenshteinDistanceBasedTextSimilarity();
         }
     }
 

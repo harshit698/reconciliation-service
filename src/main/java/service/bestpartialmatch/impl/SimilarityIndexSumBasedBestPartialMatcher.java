@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 import service.bestpartialmatch.BestPartialMatchStrategy;
 
-public class SimilaritySumBasedBestPartialMatcher implements BestPartialMatchStrategy<List<Double>> {
+public class SimilarityIndexSumBasedBestPartialMatcher implements BestPartialMatchStrategy<List<Double>> {
 
     @Override
     public int getBestPartialMatchIndex(List<List<Double>> partialMatchSimilarityVectors) {

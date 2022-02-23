@@ -1,4 +1,4 @@
-package service.strategy;
+package service;
 
 public enum ReconciliationServiceStrategy {
     CSV_FILE

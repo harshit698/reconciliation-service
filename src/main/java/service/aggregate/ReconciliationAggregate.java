@@ -1,22 +1,22 @@
 package service.aggregate;
 
-import java.util.List;
-
 public interface ReconciliationAggregate<T> {
 
-    void putSingleExactMatch(T exactMatch);
+    void putSingleExactMatch(T firstRecord, T secondRecord);
 
-    void putExactMatches(List<T> exactMatches);
+//  void putExactMatches(List<T> exactMatches);
 
-    void putSinglePartialMatch(T partialMatch);
+    void putSinglePartialMatch(T firstRecord, T secondRecord);
 
-    void fillPartialMatches(List<T> partialMatch);
+//  void fillPartialMatches(List<T> partialMatch);
 
-    void putSingleOnlyInBuyer(T onlyInBuyer);
+    void putSingleOnlyInFirstFile(T onlyInFirstFile);
 
-    void fillOnlyInBuyerList(List<T> onlyInBuyerList);
+    void putSingleOnlyInSecondFile(T onlyInSecondFile);
 
-    void fillOnlyInSupplierList(List<T> onlyInSupplier);
+//  void fillOnlyInFirstFileList(List<T> onlyInFirstFileList);
 
-    List<T> getExactMatches();
+//  void fillOnlyInSecondFileList(List<T> onlyInSecondFileList);
+
+//  List<T> getExactMatches();
 }

@@ -1,11 +1,14 @@
-package service;
+package service.strategy;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import request.ReconciliationRequest;
+import service.SupportedValueDataTypes;
 import service.aggregate.ReconciliationAggregate;
 import similaritymetric.SimilarityMetricFactory;
 import similaritymetric.datesimilarity.DateSimilarityMetric;
@@ -18,14 +21,14 @@ public abstract class ReconciliationService<T> {
     protected NumberSimilarityMetric numberSimilarityMetric;
     protected TextSimilarityMetric textSimilarityMetric;
 
-    protected List<SupportedValueDataTypes> dataTypeSequence;
+    protected List<SupportedValueDataTypes> dataTypeSequence = new ArrayList<>();
 
     public final ReconciliationAggregate<T> reconcile(ReconciliationRequest request) {
         initializeSimilarityMetrics(request);
         List<T> firstReconciliationEntityList = getFirstReconciliationEntityList(request);
         List<T> secondReconciliationEntityList = getSecondReconciliationEntityList(request);
 
-        populateDataTypeSequence(firstReconciliationEntityList.get(0));
+        populateDataTypeSequence(firstReconciliationEntityList, secondReconciliationEntityList);
 
         return process(firstReconciliationEntityList, secondReconciliationEntityList);
     }
@@ -45,9 +48,9 @@ public abstract class ReconciliationService<T> {
     }
 
     protected boolean isValueDate(String value) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss:SSS");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         try {
-            LocalDateTime.parse(value, formatter);
+            LocalDate.parse(value, formatter);
             return true;
         } catch (DateTimeParseException e) {
             return false;
@@ -63,16 +66,24 @@ public abstract class ReconciliationService<T> {
         }
     }
 
-    protected boolean isSimilarityVectorAZeroVector(List<Double> similarityVector) {
-        return similarityVector.stream().noneMatch(elem -> elem != 0);
+    protected Optional<LocalDate> convertToDate(String value) {
+        List<DateTimeFormatter> knownDateFormatters =
+                Arrays.asList(DateTimeFormatter.ofPattern("d-M-yy"),
+                        DateTimeFormatter.ofPattern("dd-MM-yyyy"),
+                        DateTimeFormatter.ofPattern("d/M/yy"),
+                        DateTimeFormatter.ofPattern("dd/M/yy"));
+
+        for(DateTimeFormatter knownFormatter: knownDateFormatters) {
+            try {
+                return Optional.of(LocalDate.parse(value, knownFormatter));
+            } catch (DateTimeParseException e) {
+                System.out.println("Could not parse date: " + value + " to pattern: " + knownFormatter);
+            }
+        }
+
+        return Optional.empty();
     }
 
-    protected boolean isSimilarityVectorInfiniteVector(List<Double> similarityVector) {
-        return similarityVector.stream().anyMatch(elem -> elem.equals(Double.MAX_VALUE));
-    }
-
-    protected abstract int getClosestSecondEntityRecordIndex(Map<Integer, List<Double>> secondFileIndexToSimilarityVectorMap);
-
-    protected abstract void populateDataTypeSequence(T singleReconciliationEntity);
+    protected abstract void populateDataTypeSequence(List<T> firstReconciliationEntity, List<T> secondReconciliationEntity);
 
 }

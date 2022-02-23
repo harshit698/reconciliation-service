@@ -1,8 +1,8 @@
 package similaritymetric.datesimilarity;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public interface DateSimilarityMetric {
 
-    double compute(LocalDateTime firstDateTime, LocalDateTime secondDateTime);
+    double compute(LocalDate firstDateTime, LocalDate secondDateTime);
 }

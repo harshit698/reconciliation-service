@@ -29,7 +29,7 @@ public class CsvReconciliationAggregate implements ReconciliationAggregate<CSVRe
 
     @Override
     public void putSingleOnlyInSecondFile(CSVRecord onlyInSecondFile) {
-        this.onlyInFirstFileList.add(onlyInSecondFile);
+        this.onlyInSecondFileList.add(onlyInSecondFile);
     }
 
     @Override

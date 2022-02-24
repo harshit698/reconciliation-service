@@ -16,7 +16,7 @@ public class FileReconciliationApplication {
 
     public static void main(String[] args) {
 
-        String firstFileName = "src/main/resources/Buyer.csv";
+        String firstFileName = "src/main/resources/Buyer2.csv";
         String secondFileName = "src/main/resources/Supplier.csv";
 
         NumberSimilarityMetricRequest numberSimilarityMetricRequest = new NumberSimilarityMetricRequest(

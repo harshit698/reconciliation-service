@@ -30,6 +30,8 @@ public class CsvFileReconciliationService extends ReconciliationService<CSVRecor
     private final CSVRepository repository;
     private final BestPartialMatchStrategy<List<Double>> bestPartialMatcher = new SimilarityIndexSumBasedBestPartialMatcher();
 
+    private static int TOLERANCE_FACTOR = 2;
+
     public CsvFileReconciliationService(CSVRepository repository) {
         this.repository = repository;
     }
@@ -78,17 +80,19 @@ public class CsvFileReconciliationService extends ReconciliationService<CSVRecor
     protected ReconciliationAggregate<CSVRecord, CsvRecordMatches> process(List<CSVRecord> firstFileCsvRecords, List<CSVRecord> secondFileCsvRecords) {
 
         int firstFileIteratorIndex = 0;
-        int secondFileIteratorIndex = 0;
+        int secondFileIteratorIndex;
 
         ReconciliationAggregate<CSVRecord, CsvRecordMatches> reconciliationAggregate = new CsvReconciliationAggregate();
 
         while (firstFileIteratorIndex < firstFileCsvRecords.size()) {
+            secondFileIteratorIndex = 0;
             CSVRecord firstFileCsvRecord = firstFileCsvRecords.get(firstFileIteratorIndex);
             Map<Integer, List<Double>> secondFileIndexToSimilarityVectorMap = new HashMap<>();
 
             List<Double> similarityVector;
             boolean foundExactMatch = false;
             boolean onlyInFirstFile = false;
+            boolean partialMatch = false;
             while (secondFileIteratorIndex < secondFileCsvRecords.size()) {
                 CSVRecord secondFileCsvRecord = secondFileCsvRecords.get(secondFileIteratorIndex);
 
@@ -112,19 +116,22 @@ public class CsvFileReconciliationService extends ReconciliationService<CSVRecor
                     foundExactMatch = true;
                     reconciliationAggregate.putSingleExactMatch(firstFileCsvRecord, secondFileCsvRecord);
                     break;
-                } else if (isAtleastOneSimilarityIndexZeroIn(similarityVector)) {
+                } else if (shouldOnlyBeInFirstFile(similarityVector)) {
                     onlyInFirstFile = true;
-                    reconciliationAggregate.putSingleOnlyInFirstFile(firstFileCsvRecord);
-                    break;
                 } else {
+                    partialMatch = true;
                     secondFileIndexToSimilarityVectorMap.put(secondFileIteratorIndex, similarityVector);
-                    secondFileIteratorIndex++;
                 }
+                secondFileIteratorIndex++;
             }
 
-            if (!foundExactMatch && !onlyInFirstFile) {
+            if (!foundExactMatch && !onlyInFirstFile && partialMatch) {
                 int bestPartialMatchIndex = getBestPartialMatchRecordIndex(secondFileIndexToSimilarityVectorMap);
                 reconciliationAggregate.putSinglePartialMatch(firstFileCsvRecord, secondFileCsvRecords.get(bestPartialMatchIndex));
+            }
+
+            if(onlyInFirstFile && !partialMatch) {
+                reconciliationAggregate.putSingleOnlyInFirstFile(firstFileCsvRecord);
             }
 
             firstFileIteratorIndex++;
@@ -154,11 +161,7 @@ public class CsvFileReconciliationService extends ReconciliationService<CSVRecor
                 alreadyAPartialMatch = partialMatches.get(0).getFirstRecord().equals(secondFileCsvRecord);
             }
 
-            if (!alreadyAnExactMatch) {
-                return !alreadyAPartialMatch;
-            }
-
-            return false;
+            return  alreadyAnExactMatch || alreadyAPartialMatch;
         }).forEach(reconciliationAggregate::putSingleOnlyInSecondFile);
     }
 
@@ -244,7 +247,12 @@ public class CsvFileReconciliationService extends ReconciliationService<CSVRecor
         return similarityIndexVector.stream().allMatch(similarityIndex -> similarityIndex == 1);
     }
 
-    private boolean isAtleastOneSimilarityIndexZeroIn(List<Double> similarityIndexVector) {
-        return similarityIndexVector.stream().anyMatch(similarityIndex -> similarityIndex == 0);
+    private boolean shouldOnlyBeInFirstFile(List<Double> similarityIndexVector) {
+        long count = similarityIndexVector.stream()
+                .filter(similarityIndex -> similarityIndex == 0)
+                .count();
+
+        return count >= similarityIndexVector.size()/TOLERANCE_FACTOR;
+
     }
 }

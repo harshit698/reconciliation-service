@@ -43,6 +43,9 @@ public class CsvFileReconciliationService extends ReconciliationService<CSVRecor
 
         for(int i = 0; i < numberOfColumns; i++) {
             boolean foundNonEmptyValue = false;
+            boolean isDateTimeType = false;
+            boolean isTextType = false;
+            Optional<SupportedValueDataTypes> nonDateTimeDetectedType = Optional.empty();
             for (CSVRecord csvRecord : allCsvRecords) {
                 String value = csvRecord.get(i);
                 if (!value.isBlank()) {
@@ -51,8 +54,7 @@ public class CsvFileReconciliationService extends ReconciliationService<CSVRecor
                         dataTypeSequence.add(DATETIME);
                         break;
                     } else if (isValueNumber(value)) {
-                        dataTypeSequence.add(NUMBER);
-                        break;
+                        nonDateTimeDetectedType = Optional.of(NUMBER);
                     } else {
                         dataTypeSequence.add(TEXT);
                         break;
@@ -62,6 +64,9 @@ public class CsvFileReconciliationService extends ReconciliationService<CSVRecor
 
             if (!foundNonEmptyValue) {
                 dataTypeSequence.add(TEXT);
+            } else if (!isDateTimeType && !isTextType) {
+                dataTypeSequence.add(nonDateTimeDetectedType.orElseThrow(() ->
+                        new IllegalArgumentException("Unexpected error.")));
             }
         }
     }
@@ -143,8 +148,8 @@ public class CsvFileReconciliationService extends ReconciliationService<CSVRecor
                 secondFileColumnValue);
 
         if (blankBasedSimilarityIndex.isEmpty()) {
-            double firstNumber = Double.parseDouble(firstFileColumnValue);
-            double secondNumber = Double.parseDouble(secondFileColumnValue);
+            double firstNumber = convertToNumber(firstFileColumnValue);
+            double secondNumber = convertToNumber(secondFileColumnValue);
 
             return numberSimilarityMetric.compute(firstNumber, secondNumber);
         }
@@ -158,8 +163,8 @@ public class CsvFileReconciliationService extends ReconciliationService<CSVRecor
                 secondFileColumnValue);
 
         if (blankBasedSimilarityIndex.isEmpty()) {
-            LocalDate firstDate = LocalDate.parse(firstFileColumnValue);
-            LocalDate secondDate = LocalDate.parse(secondFileColumnValue);
+            LocalDate firstDate = convertToDate(firstFileColumnValue);
+            LocalDate secondDate = convertToDate(secondFileColumnValue);
             return dateSimilarityMetric.compute(firstDate, secondDate);
         }
 

@@ -58,12 +58,16 @@ public abstract class ReconciliationService<T> {
 
     protected boolean isValueNumber(String value) {
         try {
-            String plainNumber = value.replaceAll(",", "");
-            Double.parseDouble(plainNumber);
+            convertToNumber(value);
             return true;
         } catch (NumberFormatException e) {
             return false;
         }
+    }
+
+    protected double convertToNumber(String value) {
+        String plainNumber = value.replaceAll(",", "");
+        return Double.parseDouble(plainNumber);
     }
 
     protected LocalDate convertToDate(String value) {

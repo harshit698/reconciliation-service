@@ -20,9 +20,9 @@ public class FileReconciliationApplication {
         String secondFileName = "src/main/resources/Supplier.csv";
 
         NumberSimilarityMetricRequest numberSimilarityMetricRequest = new NumberSimilarityMetricRequest(
-                NumberSimilarityMetricStrategy.THRESHOLD_BASED, 2);
+                NumberSimilarityMetricStrategy.THRESHOLD_BASED, 0.5);
         DateSimilarityMetricRequest dateSimilarityMetricRequest = new DateSimilarityMetricRequest(
-                DateSimilarityMetricStrategy.THRESHOLD_BASED, 2);
+                DateSimilarityMetricStrategy.THRESHOLD_BASED, 0.5);
         TextSimilarityMetricRequest textSimilarityMetricRequest = new TextSimilarityMetricRequest(
                 TextSimilarityMetricStrategy.LEVENSHTEIN_DISTANCE);
         ReconciliationEntityReferences reconciliationEntityReferences = new ReconciliationEntityReferences(

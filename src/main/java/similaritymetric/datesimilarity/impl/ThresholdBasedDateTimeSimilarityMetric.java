@@ -27,6 +27,6 @@ public class ThresholdBasedDateTimeSimilarityMetric implements DateSimilarityMet
         long smallerDateTimeEpoch = Math.min(firstDateEpoch, secondDateEpoch);
         double similarityIndex = smallerDateTimeEpoch/(double) largerDateTimeEpoch;
 
-        return similarityIndex <= threshold? similarityIndex: 0;
+        return similarityIndex >= threshold? similarityIndex: 0;
     }
 }

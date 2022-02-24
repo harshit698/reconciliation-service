@@ -30,7 +30,7 @@ public class CsvFileReconciliationService extends ReconciliationService<CSVRecor
     private final CSVRepository repository;
     private final BestPartialMatchStrategy<List<Double>> bestPartialMatcher = new SimilarityIndexSumBasedBestPartialMatcher();
 
-    private static int TOLERANCE_FACTOR = 2;
+    private static final int TOLERANCE_FACTOR = 2;
 
     public CsvFileReconciliationService(CSVRepository repository) {
         this.repository = repository;
@@ -154,14 +154,20 @@ public class CsvFileReconciliationService extends ReconciliationService<CSVRecor
 
 
             if (exactMatches.size() > 0) {
-                alreadyAnExactMatch = exactMatches.get(0).getFirstRecord().equals(secondFileCsvRecord);
+                //alreadyAnExactMatch = exactMatches.get(0).getFirstRecord().equals(secondFileCsvRecord);
+                alreadyAnExactMatch = exactMatches.stream()
+                        .anyMatch(exactMatch -> exactMatch.getFirstRecord().equals(secondFileCsvRecord)
+                                || exactMatch.getSecondRecord().equals(secondFileCsvRecord));
             }
 
             if (partialMatches.size() > 0) {
-                alreadyAPartialMatch = partialMatches.get(0).getFirstRecord().equals(secondFileCsvRecord);
+                //alreadyAPartialMatch = partialMatches.get(0).getFirstRecord().equals(secondFileCsvRecord);
+                alreadyAPartialMatch = partialMatches.stream()
+                        .anyMatch(partialMatch -> partialMatch.getFirstRecord().equals(secondFileCsvRecord)
+                                        || partialMatch.getSecondRecord().equals(secondFileCsvRecord));
             }
 
-            return  alreadyAnExactMatch || alreadyAPartialMatch;
+            return  !(alreadyAnExactMatch || alreadyAPartialMatch);
         }).forEach(reconciliationAggregate::putSingleOnlyInSecondFile);
     }
 
@@ -252,7 +258,7 @@ public class CsvFileReconciliationService extends ReconciliationService<CSVRecor
                 .filter(similarityIndex -> similarityIndex == 0)
                 .count();
 
-        return count >= similarityIndexVector.size()/TOLERANCE_FACTOR;
+        return count >= similarityIndexVector.size()/5;
 
     }
 }

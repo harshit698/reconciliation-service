@@ -21,6 +21,6 @@ public class ThresholdBasedNumberSimilarityMetric implements NumberSimilarityMet
         double smallNumber = Math.min(firstNumber, secondNumber);
         double similarityIndex = smallNumber/largerNumber;
 
-        return similarityIndex <= threshold? similarityIndex: 0;
+        return similarityIndex >= threshold? similarityIndex: 0;
     }
 }

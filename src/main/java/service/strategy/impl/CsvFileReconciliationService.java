@@ -25,7 +25,7 @@ import service.bestpartialmatch.BestPartialMatchStrategy;
 import service.bestpartialmatch.impl.SimilarityIndexSumBasedBestPartialMatcher;
 import service.strategy.ReconciliationService;
 
-public class CsvFileReconciliationService extends ReconciliationService<CSVRecord> {
+public class CsvFileReconciliationService extends ReconciliationService<CSVRecord, CsvRecordMatches> {
 
     private final CSVRepository repository;
     private final BestPartialMatchStrategy<List<Double>> bestPartialMatcher = new SimilarityIndexSumBasedBestPartialMatcher();
@@ -75,12 +75,12 @@ public class CsvFileReconciliationService extends ReconciliationService<CSVRecor
     }
 
     @Override
-    protected ReconciliationAggregate<CSVRecord> process(List<CSVRecord> firstFileCsvRecords, List<CSVRecord> secondFileCsvRecords) {
+    protected ReconciliationAggregate<CSVRecord, CsvRecordMatches> process(List<CSVRecord> firstFileCsvRecords, List<CSVRecord> secondFileCsvRecords) {
 
         int firstFileIteratorIndex = 0;
         int secondFileIteratorIndex = 0;
 
-        ReconciliationAggregate<CSVRecord> reconciliationAggregate = new CsvReconciliationAggregate();
+        ReconciliationAggregate<CSVRecord, CsvRecordMatches> reconciliationAggregate = new CsvReconciliationAggregate();
 
         while (firstFileIteratorIndex < firstFileCsvRecords.size()) {
             CSVRecord firstFileCsvRecord = firstFileCsvRecords.get(firstFileIteratorIndex);
@@ -135,7 +135,7 @@ public class CsvFileReconciliationService extends ReconciliationService<CSVRecor
         return reconciliationAggregate;
     }
 
-    private void fillOnlyInSecondFileCsvRecords(ReconciliationAggregate<CSVRecord> reconciliationAggregate,
+    private void fillOnlyInSecondFileCsvRecords(ReconciliationAggregate<CSVRecord, CsvRecordMatches> reconciliationAggregate,
                                                 List<CSVRecord> secondFileCsvRecords) {
 
         secondFileCsvRecords.stream().filter(secondFileCsvRecord -> {

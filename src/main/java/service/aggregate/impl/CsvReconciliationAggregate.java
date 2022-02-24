@@ -5,7 +5,7 @@ import java.util.List;
 import org.apache.commons.csv.CSVRecord;
 import service.aggregate.ReconciliationAggregate;
 
-public class CsvReconciliationAggregate implements ReconciliationAggregate<CSVRecord> {
+public class CsvReconciliationAggregate implements ReconciliationAggregate<CSVRecord, CsvRecordMatches> {
 
     private List<CsvRecordMatches> exactMatches = new ArrayList<>();
     private List<CsvRecordMatches> partialMatches = new ArrayList<>();

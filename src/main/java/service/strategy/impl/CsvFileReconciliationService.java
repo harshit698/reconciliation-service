@@ -5,6 +5,7 @@ import static service.SupportedValueDataTypes.NUMBER;
 import static service.SupportedValueDataTypes.TEXT;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -114,12 +115,16 @@ public class CsvFileReconciliationService extends ReconciliationService<CSVRecor
 
                 if (areAllSimilarityIndexOneIn(similarityVector)) {
                     foundExactMatch = true;
+                    onlyInFirstFile = false;
+                    partialMatch = false;
                     reconciliationAggregate.putSingleExactMatch(firstFileCsvRecord, secondFileCsvRecord);
                     break;
                 } else if (shouldOnlyBeInFirstFile(similarityVector)) {
                     onlyInFirstFile = true;
+                    partialMatch = false;
                 } else {
                     partialMatch = true;
+                    onlyInFirstFile = false;
                     secondFileIndexToSimilarityVectorMap.put(secondFileIteratorIndex, similarityVector);
                 }
                 secondFileIteratorIndex++;
@@ -130,7 +135,7 @@ public class CsvFileReconciliationService extends ReconciliationService<CSVRecor
                 reconciliationAggregate.putSinglePartialMatch(firstFileCsvRecord, secondFileCsvRecords.get(bestPartialMatchIndex));
             }
 
-            if(onlyInFirstFile && !partialMatch) {
+            if(onlyInFirstFile) {
                 reconciliationAggregate.putSingleOnlyInFirstFile(firstFileCsvRecord);
             }
 
@@ -154,14 +159,12 @@ public class CsvFileReconciliationService extends ReconciliationService<CSVRecor
 
 
             if (exactMatches.size() > 0) {
-                //alreadyAnExactMatch = exactMatches.get(0).getFirstRecord().equals(secondFileCsvRecord);
                 alreadyAnExactMatch = exactMatches.stream()
                         .anyMatch(exactMatch -> exactMatch.getFirstRecord().equals(secondFileCsvRecord)
                                 || exactMatch.getSecondRecord().equals(secondFileCsvRecord));
             }
 
             if (partialMatches.size() > 0) {
-                //alreadyAPartialMatch = partialMatches.get(0).getFirstRecord().equals(secondFileCsvRecord);
                 alreadyAPartialMatch = partialMatches.stream()
                         .anyMatch(partialMatch -> partialMatch.getFirstRecord().equals(secondFileCsvRecord)
                                         || partialMatch.getSecondRecord().equals(secondFileCsvRecord));
@@ -240,6 +243,11 @@ public class CsvFileReconciliationService extends ReconciliationService<CSVRecor
 
     private int getBestPartialMatchRecordIndex(Map<Integer, List<Double>> secondFileIndexToSimilarityVectorMap) {
 
+        if(secondFileIndexToSimilarityVectorMap.size() == 1) {
+            return secondFileIndexToSimilarityVectorMap.keySet().stream().findFirst().orElseThrow(
+                    () -> new IllegalStateException("Unexpected error"));
+        }
+
         LinkedHashMap<Integer, List<Double>> orderedIndexToSimilarityVectorMap = new LinkedHashMap<>(secondFileIndexToSimilarityVectorMap);
 
         List<List<Double>> partialMatchSimilarityVectors = new ArrayList<>(orderedIndexToSimilarityVectorMap.values());
@@ -258,7 +266,7 @@ public class CsvFileReconciliationService extends ReconciliationService<CSVRecor
                 .filter(similarityIndex -> similarityIndex == 0)
                 .count();
 
-        return count >= similarityIndexVector.size()/5;
+        return count >= similarityIndexVector.size()/TOLERANCE_FACTOR;
 
     }
 }

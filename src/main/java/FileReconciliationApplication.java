@@ -7,7 +7,7 @@ import service.aggregate.ReconciliationAggregate;
 import service.ReconciliationEntityReferences;
 import service.strategy.ReconciliationService;
 import service.ReconciliationServiceFactory;
-import service.ReconciliationServiceStrategy;
+import service.strategy.ReconciliationServiceStrategy;
 import similaritymetric.DateSimilarityMetricStrategy;
 import similaritymetric.NumberSimilarityMetricStrategy;
 import similaritymetric.TextSimilarityMetricStrategy;
@@ -16,7 +16,7 @@ public class FileReconciliationApplication {
 
     public static void main(String[] args) {
 
-        String firstFileName = "src/main/resources/Buyer2.csv";
+        String firstFileName = "src/main/resources/Buyer.csv";
         String secondFileName = "src/main/resources/Supplier.csv";
 
         NumberSimilarityMetricRequest numberSimilarityMetricRequest = new NumberSimilarityMetricRequest(

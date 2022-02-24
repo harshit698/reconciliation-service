@@ -84,7 +84,7 @@ public abstract class ReconciliationService<T, V extends RecordMatches<T>> {
             try {
                 parsedLocalDate =  Optional.of(LocalDate.parse(value, knownFormatter));
             } catch (DateTimeParseException e) {
-               continue;
+                // can be logged
             }
         }
 

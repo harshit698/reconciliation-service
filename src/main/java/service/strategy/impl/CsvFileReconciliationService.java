@@ -20,6 +20,7 @@ import request.ReconciliationRequest;
 import service.SupportedValueDataTypes;
 import service.aggregate.ReconciliationAggregate;
 import service.aggregate.impl.CsvReconciliationAggregate;
+import service.aggregate.impl.CsvRecordMatches;
 import service.bestpartialmatch.BestPartialMatchStrategy;
 import service.bestpartialmatch.impl.SimilarityIndexSumBasedBestPartialMatcher;
 import service.strategy.ReconciliationService;
@@ -52,11 +53,13 @@ public class CsvFileReconciliationService extends ReconciliationService<CSVRecor
                     foundNonEmptyValue = true;
                     if (isValueDate(value)) {
                         dataTypeSequence.add(DATETIME);
+                        isDateTimeType = true;
                         break;
                     } else if (isValueNumber(value)) {
                         nonDateTimeDetectedType = Optional.of(NUMBER);
                     } else {
                         dataTypeSequence.add(TEXT);
+                        isTextType = true;
                         break;
                     }
                 }
@@ -127,7 +130,36 @@ public class CsvFileReconciliationService extends ReconciliationService<CSVRecor
             firstFileIteratorIndex++;
         }
 
+        fillOnlyInSecondFileCsvRecords(reconciliationAggregate, secondFileCsvRecords);
+
         return reconciliationAggregate;
+    }
+
+    private void fillOnlyInSecondFileCsvRecords(ReconciliationAggregate<CSVRecord> reconciliationAggregate,
+                                                List<CSVRecord> secondFileCsvRecords) {
+
+        secondFileCsvRecords.stream().filter(secondFileCsvRecord -> {
+            List<CsvRecordMatches> exactMatches = reconciliationAggregate.getExactMatches();
+            List<CsvRecordMatches> partialMatches = reconciliationAggregate.getPartialMatches();
+
+            boolean alreadyAnExactMatch = false;
+            boolean alreadyAPartialMatch = false;
+
+
+            if (exactMatches.size() > 0) {
+                alreadyAnExactMatch = exactMatches.get(0).getFirstRecord().equals(secondFileCsvRecord);
+            }
+
+            if (partialMatches.size() > 0) {
+                alreadyAPartialMatch = partialMatches.get(0).getFirstRecord().equals(secondFileCsvRecord);
+            }
+
+            if (!alreadyAnExactMatch) {
+                return !alreadyAPartialMatch;
+            }
+
+            return false;
+        }).forEach(reconciliationAggregate::putSingleOnlyInSecondFile);
     }
 
     private double getTextSimilarityMetricIndex(String firstFileColumnValue, String secondFileColumnValue) {

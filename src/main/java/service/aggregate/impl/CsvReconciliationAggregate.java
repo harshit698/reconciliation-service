@@ -32,18 +32,22 @@ public class CsvReconciliationAggregate implements ReconciliationAggregate<CSVRe
         this.onlyInFirstFileList.add(onlyInSecondFile);
     }
 
+    @Override
     public List<CsvRecordMatches> getExactMatches() {
         return exactMatches;
     }
 
+    @Override
     public List<CsvRecordMatches> getPartialMatches() {
         return partialMatches;
     }
 
+    @Override
     public List<CSVRecord> getOnlyInFirstFileList() {
         return onlyInFirstFileList;
     }
 
+    @Override
     public List<CSVRecord> getOnlyInSecondFileList() {
         return onlyInSecondFileList;
     }

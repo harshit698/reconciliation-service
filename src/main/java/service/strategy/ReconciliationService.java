@@ -48,9 +48,8 @@ public abstract class ReconciliationService<T> {
     }
 
     protected boolean isValueDate(String value) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         try {
-            LocalDate.parse(value, formatter);
+            convertToDate(value);
             return true;
         } catch (DateTimeParseException e) {
             return false;
@@ -59,29 +58,31 @@ public abstract class ReconciliationService<T> {
 
     protected boolean isValueNumber(String value) {
         try {
-            Double.parseDouble(value);
+            String plainNumber = value.replaceAll(",", "");
+            Double.parseDouble(plainNumber);
             return true;
         } catch (NumberFormatException e) {
             return false;
         }
     }
 
-    protected Optional<LocalDate> convertToDate(String value) {
+    protected LocalDate convertToDate(String value) {
         List<DateTimeFormatter> knownDateFormatters =
                 Arrays.asList(DateTimeFormatter.ofPattern("d-M-yy"),
                         DateTimeFormatter.ofPattern("dd-MM-yyyy"),
                         DateTimeFormatter.ofPattern("d/M/yy"),
                         DateTimeFormatter.ofPattern("dd/M/yy"));
-
+        Optional<LocalDate> parsedLocalDate = Optional.empty();
         for(DateTimeFormatter knownFormatter: knownDateFormatters) {
             try {
-                return Optional.of(LocalDate.parse(value, knownFormatter));
+                parsedLocalDate =  Optional.of(LocalDate.parse(value, knownFormatter));
             } catch (DateTimeParseException e) {
-                System.out.println("Could not parse date: " + value + " to pattern: " + knownFormatter);
+               continue;
             }
         }
 
-        return Optional.empty();
+        return parsedLocalDate.orElseThrow(
+                () -> new DateTimeParseException("Unable to parse value, maybe it's not a date", value, 0));
     }
 
     protected abstract void populateDataTypeSequence(List<T> firstReconciliationEntity, List<T> secondReconciliationEntity);
